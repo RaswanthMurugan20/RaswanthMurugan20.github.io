@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raswanth Murugan - AI for Science</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- Dynamic Theme Variables --- */
+        :root {
+            /* Light Mode Defaults (Solari) */
+            --bg-color: #FDFCF5;
+            --card-bg: #FFFFFF;
+            --text-color: #1C1C1C;
+            --text-muted: rgba(28, 28, 28, 0.85);
+            --text-light: #666666;
+            --border-color: rgba(0, 0, 0, 0.05);
+            --line-color: rgba(0, 0, 0, 0.15);
+            --dot-color: #B0B0B0;
+            --glass-bg: rgba(255, 255, 255, 0.5);
+
+            /* Light Mode Orbs */
+            --orb-l-c1: rgba(0, 150, 255, 0.4);
+            --orb-l-c2: rgba(100, 0, 180, 0.2);
+            --orb-r-c1: rgba(255, 80, 0, 0.45);
+            --orb-r-c2: rgba(255, 0, 150, 0.25);
+
+            --max-width: 1100px;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Dark Mode Overrides (Lunari) */
+        [data-theme="dark"] {
+            --bg-color: #0B0A1A;
+            --card-bg: #151426;
+            --text-color: #FDFCF5;
+            --text-muted: rgba(253, 252, 245, 0.85);
+            --text-light: #A0A0A0;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --line-color: rgba(255, 255, 255, 0.15);
+            --dot-color: #4A4A6A;
+            --glass-bg: rgba(0, 0, 0, 0.4);
+
+            /* Neon Dark Mode Orbs */
+            --orb-l-c1: rgba(255, 20, 147, 0.85);
+            --orb-l-c2: rgba(255, 69, 0, 0.55);
+            --orb-r-c1: rgba(0, 255, 255, 0.70);
+            --orb-r-c2: rgba(138, 43, 226, 0.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* --- Extremely Sparse Stars Overlay --- */
+        .stars-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Ccircle cx='100' cy='150' r='0.5' fill='%23ffffff' opacity='0.5'/%3E%3Ccircle cx='400' cy='300' r='0.7' fill='%23ffffff' opacity='0.3'/%3E%3Ccircle cx='250' cy='500' r='0.4' fill='%23ffffff' opacity='0.6'/%3E%3C/svg%3E");
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 1s ease;
+        }
+
+        [data-theme="dark"] .stars-overlay {
+            opacity: 1;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        section {
+            padding: 100px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 64px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-family: var(--font-heading);
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: var(--text-color);
+        }
+
+        h3 {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 30px 0;
+            position: sticky;
+            top: 0;
+            background: var(--bg-color);
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 40px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            font-family: var(--font-body);
+            font-weight: 500;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover {
+            opacity: 0.6;
+        }
+
+        /* --- Minimalist Toggle Button --- */
+        #theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--border-color);
+            transform: scale(1.08);
+        }
+
+        #theme-toggle svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        /* Solari Minimal Star - 4 Spokes, All Black, Yellow Glow */
+        .solari-icon {
+            color: #1C1C1C;
+            filter: drop-shadow(0 0 10px #FFD700);
+            transition: filter 0.3s ease;
+        }
+
+        /* Lunari Minimal Crescent - Tight Sphere Formation, Pure White */
+        .lunari-icon {
+            display: none;
+            color: #FFFFFF;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+        }
+
+        [data-theme="dark"] .solari-icon {
+            display: none;
+        }
+
+        [data-theme="dark"] .lunari-icon {
+            display: block;
+        }
+
+        /* --- Hero Section --- */
+        #hero {
+            position: relative;
+            padding: 80px 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .ambient-glow-left {
+            position: absolute;
+            left: -15%;
+            top: 5%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--orb-l-c1) 0%, var(--orb-l-c2) 40%, transparent 70%);
+            filter: blur(60px);
+            z-index: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: background 0.8s ease;
+        }
+
+        .ambient-glow-right {
+            position: absolute;
+            right: -10%;
+            top: 15%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--orb-r-c1) 0%, var(--orb-r-c2) 40%, transparent 70%);
+            filter: blur(60px);
+            z-index: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: background 0.8s ease;
+        }
+
+        .hero-title-tag {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-color);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        #morph-name {
+            cursor: pointer;
+            display: inline-block;
+            min-width: 250px;
+            user-select: none;
+            transition: opacity 0.2s;
+        }
+
+        #morph-name:hover {
+            opacity: 0.7;
+        }
+
+        .image-container {
+            width: 350px;
+            height: 450px;
+            background: var(--glass-bg);
+            border-radius: 20px;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(5px);
+            transition: background 0.5s ease;
+        }
+
+        .hero-links {
+            display: grid;
+            grid-template-columns: repeat(6, auto);
+            gap: 20px 24px;
+            margin-top: 30px;
+            width: fit-content;
+        }
+
+        .hero-links .icon-link:nth-child(1) {
+            grid-column: 1 / 3;
+        }
+
+        .hero-links .icon-link:nth-child(2) {
+            grid-column: 3 / 5;
+        }
+
+        .hero-links .icon-link:nth-child(3) {
+            grid-column: 5 / 7;
+        }
+
+        .hero-links .icon-link:nth-child(4) {
+            grid-column: 2 / 4;
+        }
+
+        .hero-links .icon-link:nth-child(5) {
+            grid-column: 4 / 6;
+        }
+
+        @media (max-width: 600px) {
+            .hero-links {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                grid-template-columns: none;
+            }
+
+            .hero-links .icon-link {
+                grid-column: auto !important;
+            }
+        }
+
+        .icon-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .icon-link svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .icon-link:hover {
+            transform: translateY(-2px);
+        }
+
+        /* --- Expandable Lore Section --- */
+        #lore {
+            background-color: var(--card-bg);
+            padding: 100px 0;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+            margin: 0 40px 60px 40px;
+            transition: background-color 0.5s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .lore-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .lore-content p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .drop-cap {
+            font-family: var(--font-heading);
+            font-size: 60px;
+            line-height: 1;
+            float: left;
+            padding-right: 12px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .lore-subheading {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        /* Smooth CSS Grid Accordion Trick */
+        .lore-expandable {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Smooth easing */
+        }
+
+        .lore-expandable-inner {
+            overflow: hidden;
+        }
+
+        .lore-expandable.expanded {
+            grid-template-rows: 1fr;
+        }
+
+        .lore-expandable-inner>div {
+            padding-top: 20px;
+            /* Gives some breathing room when it opens */
+        }
+
+        /* Read More Toggle Button */
+        .lore-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .lore-toggle-btn:hover {
+            background: var(--border-color);
+        }
+
+        .lore-toggle-btn .chevron {
+            transition: transform 0.4s ease;
+        }
+
+        .lore-toggle-btn.expanded .chevron {
+            transform: rotate(180deg);
+            /* Flips the arrow upwards */
+        }
+
+        /* --- Experience Timeline --- */
+        .timeline-item {
+            position: relative;
+            padding-left: 150px;
+            margin-bottom: 45px;
+            cursor: pointer;
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+
+        .click-card {
+            position: absolute;
+            left: 120px;
+            top: -20px;
+            width: calc(100% - 130px);
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-item.active .click-card {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .experiences-grid.has-active .timeline-item:not(.active) {
+            filter: blur(4px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .timeline-logo {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 120px;
+            top: -10px;
+            bottom: -25px;
+            width: 2px;
+            background-color: var(--line-color);
+            z-index: 1;
+            transition: background-color 0.5s ease;
+        }
+
+        .timeline-item:last-child::after {
+            bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 115px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--dot-color);
+            z-index: 2;
+            transition: background 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .timeline-item:hover::before,
+        .timeline-item.active::before {
+            background: linear-gradient(to right, #3A0CA3 0%, #4361EE 33%, #F72585 66%, #FF7A00 100%);
+            transform: scale(1.3);
+        }
+
+        .date-tag {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 4px;
+            display: block;
+            transition: color 0.5s ease;
+        }
+
+        .timeline-item p {
+            margin-bottom: 4px;
+            color: var(--text-muted);
+            font-size: 17px;
+        }
+
+        .guide-tag {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 0;
+        }
+
+        .guide-link {
+            color: inherit;
+            text-decoration: none;
+            font-weight: inherit;
+            transition: color 0.15s ease, font-weight 0.15s ease;
+        }
+
+        .guide-link:hover {
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
+        /* --- Publications Vault --- */
+        .paper-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        .paper-card {
+            display: flex;
+            gap: 40px;
+            padding: 32px;
+            align-items: center;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .paper-thumbnail {
+            flex: 0 0 40%;
+            max-width: 380px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .paper-image-column {
+            flex: 0 0 40%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .paper-image-column img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .paper-venue {
+            font-size: 13px;
+            font-family: var(--font-body);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .paper-card h3 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            line-height: 1.3;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .author-name {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .my-name {
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .paper-abstract {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .paper-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2b7cb9;
+            color: #FFFFFF;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .paper-btn:hover {
+            background-color: #1e5e8e;
+            transform: translateY(-2px);
+        }
+
+        /* --- Misc. Section --- */
+        .misc-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .misc-col {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .misc-col-right {
+            justify-content: center;
+        }
+
+        .quirk-box h3 {
+            margin-bottom: 12px;
+        }
+
+        .quirk-box p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 0;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: inherit;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 900px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-links {
+                justify-content: center;
+            }
+
+            .image-container {
+                margin: 40px auto;
+            }
+
+            .nav-wrapper {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            h1 {
+                font-size: 48px;
+            }
+
+            .misc-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .paper-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 24px;
+                padding: 24px;
+            }
+
+            .paper-thumbnail,
+            .paper-image-column {
+                flex: auto;
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .timeline-item {
+                padding-left: 0;
+                padding-top: 80px;
+            }
+
+            .timeline-logo {
+                left: 0;
+                top: 0;
+                transform: none;
+                width: 80px;
+                height: 80px;
+            }
+
+            .timeline-item::before {
+                left: 0;
+                top: 90px;
+            }
+
+            .timeline-item::after {
+                left: 5px;
+                top: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="stars-overlay"></div>
+
+    <header>
+        <div class="container nav-wrapper">
+            <nav>
+                <ul>
+                    <li><a href="#hero">About</a></li>
+                    <li><a href="#experiences">Experiences</a></li>
+                    <li><a href="#papers">Papers</a></li>
+                    <li><a href="#lore">My Lore</a></li>
+                    <li><a href="#misc">Misc.</a></li>
+                </ul>
+            </nav>
+
+            <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <svg class="solari-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="3"/>
+                    <rect x="10.75" y="1.5" width="2.5" height="7.5" rx="1.25"/>
+                    <rect x="15" y="10.75" width="7.5" height="2.5" rx="1.25"/>
+                    <rect x="10.75" y="15" width="2.5" height="7.5" rx="1.25"/>
+                    <rect x="1.5" y="10.75" width="7.5" height="2.5" rx="1.25"/>
+                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(45 12 12)"/>
+                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(135 12 12)"/>
+                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(225 12 12)"/>
+                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(315 12 12)"/>
+                </svg>
+                <svg class="lunari-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <section id="hero">
+        <div class="ambient-glow-left"></div>
+        <div class="ambient-glow-right"></div>
+        <div class="container hero-content">
+            <div class="hero-intro">
+                <span class="hero-title-tag">AI Engineer + Researcher</span>
+                <h1>
+                    <span id="morph-name" onclick="toggleName()">Raswanth</span><br>
+                    Murugan
+                </h1>
+                <p> Experience spanning across industry and academia. I've had the fortune
+                    of working at the intersection of AI and multiple diverse domains, though my current muse is biology
+                    and drug discovery. Currently,
+                    I am a researcher at the Anima Lab.
+                </p>
+
+                <div class="hero-links">
+                    <a href="https://github.com/RaswanthMurugan20" target="_blank" class="icon-link" title="GitHub">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/raswanth-murugan-42x2/" target="_blank" class="icon-link"
+                        title="LinkedIn">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                        LinkedIn
+                    </a>
+                    <a href="https://scholar.google.com/citations?user=LwASN4sAAAAJ&hl=en" target="_blank"
+                        class="icon-link" title="Google Scholar">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 3L1 9l11 6l9-4.91V17h2V9L12 3zM3.89 9L12 4.58L20.11 9L12 13.42L3.89 9zM12 15.5l-7-3.82v2.1l7 3.82l7-3.82v-2.1l-7 3.82z" />
+                        </svg>
+                        Scholar
+                    </a>
+                    <a href="Raswanth_CV_IIT_Caltech_AI4Science.pdf" target="_blank" class="icon-link"
+                        title="Curriculum Vitae">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM18 20H6V4h5v6h6v10z" />
+                        </svg>
+                        CV / Resume
+                    </a>
+                    <a href="mailto:raswanth99@gmail.com" class="icon-link" title="Email">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5l8-5v2z" />
+                        </svg>
+                        Gmail
+                    </a>
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="images/mydp.jpg" alt="A photo of me" class="profile-img">
+            </div>
+        </div>
+    </section>
+
+    <section id="experiences">
+        <div class="container experiences-grid">
+            <h2>Experiences</h2>
+
+            <div class="timeline-item present" onclick="toggleExperience(this, event)">
+                <img src="images/Caltech.png" alt="Caltech Logo" class="timeline-logo">
+                <span class="date-tag">Apr 2025 - Present</span>
+                <h3>Research Scientist, Anima Lab</h3>
+                <p><strong>Caltech & Argonne Lab</strong></p>
+                <div class="guide-tag">Guides: <a href="https://tensorlab.cms.caltech.edu/users/anima/"
+                        class="guide-link">Anima Anandkumar</a>, <a
+                        href="https://scholar.google.com/citations?hl=en&user=2yljOIYAAAAJ&view_op=list_works&sortby=pubdate"
+                        class="guide-link">Arvind Ramanathan</a>,
+                    <a href="https://en.wikipedia.org/wiki/Frances_Arnold" class="guide-link">Frances Arnold</a>
+                </div>
+
+                <div class="click-card">
+                    <span class="date-tag">Apr 2025 - Present</span>
+                    <h3>Research Scientist, Anima Lab</h3>
+                    <p><strong>Caltech & Argonne Lab</strong></p>
+                    <div class="guide-tag" style="margin-bottom: 20px;">Guides: Anima Anandkumar, Arvind Ramanathan,
+                        Frances Arnold</div>
+                    <p
+                        style="color: var(--text-muted); font-size: 16px; margin-top: 12px; margin-bottom: 16px; line-height: 1.6;">
+                        <strong>The Problem:</strong> In 2018, Frances won her Nobel Prize for
+                        pioneering directed evolution. While it is a widely used method to engineer enzymes, it has
+                        limitations when navigating a protein's "fitness landscape." It often struggles to explore this
+                        complex terrain effectively, frequently getting stuck in local maxima and failing to discover
+                        the global maximum that represents the best possible enzyme for a given function. The goal of
+                        this project is to use modern deep learning and generative models to better explore this
+                        landscape and address these limitations. <em>This project is still an ongoing work. To discuss
+                            further, please reach out via email.</em>
+                    </p>
+
+                    <ul
+                        style="color: var(--text-muted); font-size: 16px; margin-left: 20px; display: flex; flex-direction: column; gap: 10px; line-height: 1.6;">
+                        <li><strong>Implemented the core PLM fine-tuning infrastructure</strong>, utilizing Supervised
+                            Fine-Tuning (SFT) and Group Relative Policy Optimization (GRPO)</li>
+                        <li><strong>Jointly Engineered an iterative sequence-filtering pipeline</strong> where the PLM
+                            generates
+                            sequences that are evaluated against biophysical criteria; the survivors are then
+                            used to further fine-tune the model using SFT, priming it to generate
+                            functionally superior candidates.</li>
+                        <li><strong>Integrated cutting-edge AI with traditional computational chemistry</strong>,
+                            bridging modern deep learning models (LigandMPNN, RFDiffusion, ESMFold, TrustAffinity)
+                            with traditional Molecular Dynamics (MD), Molecular Docking (AutoDock Vina), and Density
+                            Functional Theory (ORCA)
+                            to model various stages of enzyme function.</li>
+                        <li><strong>Conducted cross-disciplinary research in both ML and Biochemistry</strong>,
+                            building domain knowledge from the ground up to understand the
+                            chemical rules governing enzyme interactions and translate those
+                            biological mechanisms into AI architectures.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item" onclick="toggleExperience(this, event)">
+                <img src="images/RFCUNY.png" alt="Cornell Logo" class="timeline-logo">
+                <span class="date-tag">Sep 2023 - Apr 2025</span>
+                <h3>Research Scientist, Xie Lab</h3>
+                <p><strong>City University of New York & Weill Cornell Medicine</strong></p>
+                <div class="guide-tag">Guide: <a href="https://www.linkedin.com/in/lei-xie-b954923/"
+                        class="guide-link">Lei Xie</a></div>
+
+                <div class="click-card">
+                    <span class="date-tag">Sep 2023 - Apr 2025</span>
+                    <h3>Research Scientist, Xie Lab</h3>
+                    <p><strong>City University of New York & Weill Cornell Medicine</strong></p>
+                    <div class="guide-tag" style="margin-bottom: 20px;">Guide: Lei Xie</div>
+                    <ul
+                        style="color: var(--text-muted); font-size: 16px; margin-left: 20px; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; line-height: 1.6;">
+                        <li><strong>Pioneered an end-to-end generative pipeline for phenotype-driven drug discovery
+                                (MolGene-E),</strong> bypassing traditional structure-based docking by directly mapping
+                            target gene expressions to novel small molecules.</li>
+                        <li><strong>Engineered a DALL-E-inspired latent diffusion architecture</strong> to handle
+                            variable-length SELFIES strings, utilizing an encoder-decoder network to compress chemical
+                            representations into a fixed-length continuous latent space for diffusion modeling.</li>
+                        <li><strong>Implemented contrastive learning frameworks</strong> to align the joint embedding
+                            space between transcriptomic profiles (healthy vs. diseased) and SELFIES, allowing the
+                            diffusion model to generate targeted molecules conditioned purely on phenotypic data.</li>
+                        <li><strong>Conducted multi-cell-line scaling analysis,</strong> uncovering critical data
+                            sparsity and noise limitations in zero-shot biological mapping. This insight proved that
+                            standard LLM architectures must be heavily augmented with first-principle biophysical
+                            inductive biases, directly informing future AI-for-Science methodologies.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item" onclick="toggleExperience(this, event)">
+                <img src="images/Samsung.png" alt="Samsung Logo" class="timeline-logo">
+                <span class="date-tag">Sep 2022 - Sep 2023</span>
+                <h3>ML Engineer</h3>
+                <p><strong>Samsung R&D India</strong></p>
+                <div class="guide-tag">Guide: <a href="https://www.linkedin.com/in/vijay-narayan-tiwari-7b475313/"
+                        class="guide-link">Vijay Narayan Tiwari</a></div>
+
+                <div class="click-card">
+                    <span class="date-tag">Sep 2022 - Sep 2023</span>
+                    <h3>ML Engineer</h3>
+                    <p><strong>Samsung R&D India</strong></p>
+                    <div class="guide-tag" style="margin-bottom: 20px;">Guide: Vijay Narayan Tiwari</div>
+                    <ul
+                        style="color: var(--text-muted); font-size: 16px; margin-left: 20px; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; line-height: 1.6;">
+                        <li><strong>Engineered an end-to-end 2D CNN pipeline</strong> to process raw Ultra-Wideband
+                            (UWB) sensor data, translating 2D Channel Impulse Response (CIR) radargrams into actionable
+                            object and terrain predictions.</li>
+                        <li><strong>Designed and implemented a closed-loop active learning system</strong> to overcome
+                            the lack of benchmark UWB data, iteratively capturing proprietary sensor readings, applying
+                            signal processing for denoising, and retraining models.</li>
+                        <li><strong>Spearheaded product ideation and proof-of-concept demonstrations</strong> leveraging
+                            UWB for zero-light spatial awareness, specifically targeting night-mode camera enhancements
+                            for lower-tier devices and collision-detection accessibility features for visually impaired
+                            users.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item" onclick="toggleExperience(this, event)">
+                <img src="images/IISc.png" alt="IISc Logo" class="timeline-logo">
+                <span class="date-tag">Jan 2022 - Jan 2023</span>
+                <h3>CDS Intern</h3>
+                <p><strong>Indian Institute of Science</strong></p>
+                <div class="guide-tag">Guide: <a href="https://cds.iisc.ac.in/faculty/deepakns/"
+                        class="guide-link">Deepak Subramani</a></div>
+
+                <div class="click-card">
+                    <span class="date-tag">Jan 2022 - Jan 2023</span>
+                    <h3>CDS Intern</h3>
+                    <p><strong>Indian Institute of Science</strong></p>
+                    <div class="guide-tag" style="margin-bottom: 20px;">Guide: Deepak Subramani</div>
+                    <ul
+                        style="color: var(--text-muted); font-size: 16px; margin-left: 20px; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; line-height: 1.6;">
+                        <li><strong>literature reviewed and prototyped data assimilation </strong> using Message
+                            Passing Networks (PGMs and MPNNs) to estimate the joint distribution <em>P(Discretized Ocean
+                                State | Prior Belief, Observations, Sensor Noise)</em>, starting with
+                            simple joint Gaussian testbeds to ocean velocity fields.</li>
+                        <li><strong>Implemented and integrated a Trajectory Transformer pipeline</strong> (coupled with
+                            beam search) directly into the main AUV codebase, utilizing generated simulation data for
+                            complete model training and evaluation.</li>
+                        <li><strong>Conducted rigorous comparative analysis</strong> between Trajectory and Decision
+                            Transformers, yielding the key architectural insight that prepending a destination token to
+                            the Decision Transformer’s sequence significantly improved its performance.</li>
+                        <li><strong>Executed extensive experimental validation</strong> across 8 complex Double Gyre
+                            flow test cases, serving as second author for the resulting AAMAS 2023 publication on
+                            intelligent onboard routing.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-item" onclick="toggleExperience(this, event)">
+                <img src="images/IIT_PKD.png" alt="IIT Logo" class="timeline-logo">
+                <span class="date-tag">July 2018 - July 2022</span>
+                <h3>B.Tech, Computer Science and Engineering</h3>
+                <p><strong>Indian Institute of Technology, Palakkad</strong></p>
+                <div class="guide-tag">Guide: <a href="https://sites.google.com/view/chandrashekar-lakshminarayanan"
+                        class="guide-link">Chandrashekar</a></div>
+
+                <div class="click-card">
+                    <span class="date-tag">July 2018 - July 2022</span>
+                    <h3>B.Tech, Computer Science and Engineering</h3>
+                    <p><strong>Indian Institute of Technology, Palakkad</strong></p>
+                    <div class="guide-tag" style="margin-bottom: 20px;">Guide: Chandrashekar</div>
+                    <ul>
+                        <li>[point1]</li>
+                        <li>[point2]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="papers">
+        <div class="container">
+            <h2>Papers</h2>
+            <div class="paper-grid">
+                <div class="paper-card">
+                    <img src="images/MLSB2.png" class="paper-thumbnail" alt="MLSB Diagram">
+                    <div>
+                        <span class="paper-venue">MLSB 2025</span>
+                        <h3>Self Distillation Fine-Tuning of Protein Language Models Improves Versatility in Protein
+                            Design</h3>
+                        <p class="author-name">Amin Tavakoli*, <span class="my-name">Raswanth Murugan*</span>, Ozan
+                            Gokdemir, Arvind Ramanathan, Frances H Arnold, Anima Anandkumar.</p>
+
+                        <p class="paper-abstract">
+                            We propose a general and efficient supervised fine-tuning (SFT) framework for protein
+                            language models (PLMs) to improve the fidelity and functional relevance of generated
+                            sequences while controlling their diversity. Due to the limited availability of
+                            experimentally annotated data, our method constructs training sets directly from the PLM
+                            using lightweight, domain-specific biophysical filters. These filters both curate
+                            high-quality sequences and identify candidates for experimental validation. Applied to a
+                            genome-scale PLM (GenSLM) on the tryptophan synthase family, this approach yields more novel
+                            sequences with improved stability and design-relevant properties.
+                        </p>
+                        <a href="https://arxiv.org/abs/2512.09329" class="paper-btn" target="_blank"
+                            rel="noopener noreferrer">PDF</a>
+                    </div>
+                </div>
+                <div class="paper-card">
+                    <img src="images/ICML.png" class="paper-thumbnail" alt="ICML Diagram">
+                    <div>
+                        <span class="paper-venue">ICML 2024</span>
+                        <h3>MolGene-E: Inverse Molecular Design to Modulate Single Cell Transcriptomics</h3>
+                        <p class="author-name">Rahul Ohlan*, <span class="my-name">Raswanth Murugan*</span>, Li Xie,
+                            Mohammadsadeq Mottaqi, Shuo Zhang, and Lei Xie.</p>
+                        <p class="paper-abstract">
+                            We propose MolGene-E (like Dall-E but for drugs discovery), a deep learning framework that
+                            designs new
+                            drugs capable of restoring diseased cells to a healthy state. While single-cell data reveals
+                            the precise differences between sick and healthy cells, its extreme noise and complexity
+                            currently prevent machine
+                            learning methods from using it for drug design. MolGene-E overcomes this by first cleaning
+                            and aligning the noisy cellular data, then using a generative model to create novel
+                            molecules based on that clear genetic profile. Validated by CRISPR experiments, our method
+                            consistently outperforms existing baselines, establishing a state-of-the-art tool for modern
+                            drug discovery.
+                        </p>
+                        <a href="https://www.biorxiv.org/content/10.1101/2025.02.19.638723v1" class="paper-btn"
+                            target="_blank" rel="noopener noreferrer">PDF</a>
+                    </div>
+                </div>
+                <div class="paper-card">
+                    <div class="paper-image-column">
+                        <img src="images/AAMAS.png" alt="AAMAS Diagram">
+                        <img src="images/AAMAS2.png" alt="AAMAS Diagram 2">
+                    </div>
+                    <div>
+                        <span class="paper-venue">AAMAS 2023</span>
+                        <h3>Intelligent Onboard Routing in Stochastic Dynamic Environments using Transformers</h3>
+                        <p class="author-name">Rohit Chowdhury, <span class="my-name">Raswanth Murugan</span>, and
+                            Deepak Subramani.</p>
+                        <p class="paper-abstract">
+                            We propose a Decision Transformer-based framework for the optimal onboard routing of
+                            autonomous marine agents. Traditional Reinforcement Learning (RL) is often too
+                            computationally expensive for real-time re-planning in complex ocean environments. Our
+                            method solves this by reframing RL path planning as a supervised sequence modeling task. We
+                            train the transformer offline using state-action-return datasets generated by solving
+                            stochastic dynamically orthogonal Hamilton-Jacobi equations. In real-time, the model
+                            processes the agent's spatio-temporal state sequences to infer ocean flows and efficiently
+                            map optimal routes. Evaluations show our approach enables robust, real-time navigation that
+                            resists noise and generalizes to entirely novel flow scenarios.
+                        </p>
+                        <a href="https://dl.acm.org/doi/10.5555/3545946.3598826" class="paper-btn" target="_blank"
+                            rel="noopener noreferrer">PDF</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="lore">
+        <div class="container lore-content">
+            <h2>My Lore</h2>
+
+            <h3 class="lore-subheading">The Question</h3>
+
+            <p><span class="drop-cap">F</span> or as long as I can remember—even as far back as the second grade—my
+                grandfather would ask me some variation of the same question: "What is the plan? What do you want to do
+                in life?" I started with the usual answers: astronaut, engineer, fireman, CEO. But as I grew older, he
+                expected more of a plan. A single word no longer sufficed. To avoid the inevitable follow-up questions,
+                I figured out that if I gave him highly niche, specific things that mattered to me that particular week,
+                he wouldn't know how to probe further. So, my "purpose" became catching Arceus in Pokémon Platinum,
+                mastering the Cat's in the Cradle yo-yo trick, or figuring out a backflip. He wasn't essentially
+                thrilled about those answers, but he'd let me off the hook. The only thing that was absolutely
+                unacceptable to him was silence. I had to give an answer of some sort.</p>
+            <p>But when he passed away, something shifted. Perhaps in retrospect, there exists a kind of magic to it,
+                but almost overnight, I inherited his voice. That question became my own. It grew louder, especially
+                because, for the first time, I was stepping out from under the shelter of established institutions into
+                the outside world. It was the only thing I had to guide my next decisions, so I held onto it deeply.</p>
+            <p>If I’m honest, the rest of this lore is just a TL;DR of me trying to find a better answer. I haven't
+                found the one yet, but I've realized a little more about myself. I think I'm a non-conformist. I'm
+                curious. I am tenacious. By nature I am a Bene Gesserit but by nurture learnt the ways of a Mentat (For
+                the non-Dune
+                readers: people
+                skills and intuition
+                came naturally to me, but I had to actively discover my love for thinking in structures, and logic). I
+                navigate life by process of elimination, driven far more by what I reject than what I seek, making the
+                few times that I do seek very compelling.</p>
+
+            <div class="lore-expandable" id="lore-expanded-section">
+                <div class="lore-expandable-inner">
+                    <div>
+                        <h3 class="lore-subheading">In between the CV lines</h3>
+                        <p>Growing up in Bangalore, India’s Silicon Valley, I was surrounded by software engineers.
+                            Honestly, it seemed boring—an endless loop of creating problems within the four perimeters
+                            of a screen just to solve them. What completely flipped my perspective was an opportunity in
+                            my freshman year at IIT to build an autonomous pesticide-spraying robot for Indian farmers.
+                            We were doing engineering exactly how it looks in the movies: building the chassis,
+                            soldering connections, slotting in the battery, 3D printing the wheels, and coding the
+                            entire thing end-to-end. In hindsight, I think everyone should do a project like that to
+                            figure out what flavor of engineering they actually like. For me, the most fascinating
+                            realization was that a few lines of code inside the microcontroller served as the brain,
+                            dictating exactly how the machine moved and interacted with the dirt. That hooked me. I
+                            decided I wanted to build more systems like that, so I switched my major to Computer
+                            Science. (Hearing that the CS majors were being taught about Hilbert’s Hotel was also a
+                            solid bonus point for the switch).</p>
+                        <p>Before I could dive deeper into physical robotics, COVID happened and the world shut down.
+                            Fortunately, I managed to land a remote internship at the Indian Institute of Science
+                            (IISc). Working at the intersection of ocean physics and reinforcement learning, we were
+                            trying to develop autonomous onboard ocean routing algorithms. That stint expanded my
+                            horizons. I realized AI didn’t need metal and motors to interact with the real world; there
+                            was this broader frontier called AI for Science where you could tackle massive, tangible
+                            physical systems.</p>
+                        <p>There was some overlap in my career timelines, and during this period, I also started working
+                            at Samsung R&D. Between the lab and the industry, I saw firsthand the unreasonable
+                            effectiveness of AI. Whether it was scientific routing or consumer products, AI possessed
+                            this unique ability to deliver first- and second-degree tangible impacts on the real world
+                            and the people using it.</p>
+                        <p>But my biggest breakthrough didn't happen in a lab or an office; it happened in Bangalore
+                            traffic. To survive the grueling commute and numb my mind, I started listening to
+                            audiobooks. I picked up The Emperor of All Maladies by Dr. Siddhartha Mukherjee (I highly
+                            recommend it—read all of his books, he has an absolute flair for the written word). That
+                            book officially broke a mental block for me. Biology had felt so distant—the last time I
+                            truly studied it was in the 10th grade—that I couldn't fathom making an impact there. But
+                            Mukherjee placed high hopes on algorithms, suggesting they might not eradicate cancer, but
+                            could make it as tractable as diabetes is today.</p>
+                        <p>That inherited question flared up again. I knew I needed to figure out what this field was
+                            about and if I could contribute. The problem was my absolute zero background in the subject.
+                            I sent out 50 cold emails until a professor at the City University of New York responded.
+                            For four months, I worked my day job at Samsung during the week, and spent my weekends and
+                            nights researching diffusion models for docking. Eventually, I was offered a fully paid
+                            visiting scientist position in his lab. I packed my bags and moved to NYC.</p>
+                        <p>That year was profoundly formative, both personally and professionally. I learned a lot about
+                            what worked, but more importantly, I learned what didn't work. I realized that scientific
+                            data is inherently sparse, noisy, and expensive to generate. You cannot just apply standard
+                            deep learning and expect a miracle. You have to build models from the ground up, baking in
+                            inductive biases and intrinsic knowledge about the physical system. It’s a philosophy that
+                            applies to building AI systems in general, but is absolutely critical in the sciences.</p>
+                        <p>Armed with that realization, I attended an AI for Science workshop at ICML, where I connected
+                            with a researcher from Caltech whose work aligned perfectly with this approach. After
+                            navigating the inevitable logistics, I began working with them, which leads me to the
+                            ongoing project I am incredibly proud of today: computational enzyme design and directed
+                            evolution.</p>
+                        <p>Looking back, the irony is not lost on me. There was a point where I actively decided I would
+                            never do computer science (boring), chemistry (I wasn't very good at it), or biology
+                            (because I took math, and biology was "only for doctors"). Yet here I am, years later,
+                            applying AI to computational biochemistry.</p>
+
+                        <h3 class="lore-subheading">The Problem Solver Identity?</h3>
+                        <p>Looking back at my trajectory, from autonomous pesticide-spraying robot to underwater
+                            navigation, thermal imaging, UWB sensors, phenotype-driven drug discovery, and now enzyme
+                            design the domains couldn't be more different. In every single one of them, there were parts
+                            I disliked and moments that made me wonder what I had signed up for. What saved me was
+                            learning not to associate myself with the type of problem I was solving, but rather the act
+                            of solving it. Shonda Rhimes (The brilliant mind behind Grey's Anatomy) does a lot more than
+                            just write, but her business card simply
+                            says 'storyteller.' because at her core, that is who she is. If I had a business card, it
+                            would say 'problem solver.' Yes, it’s a
+                            cliché. But just as there are many stories to tell, there are many problems to solve.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="lore-toggle-btn" id="lore-toggle-btn" onclick="toggleLore()">
+                <span id="lore-toggle-text">Read More</span>
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round" class="chevron">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <section id="misc">
+        <div class="container">
+            <h2>Misc.</h2>
+            <div class="misc-layout">
+                <div class="misc-col">
+                    <div class="quirk-box">
+                        <h3>Pen & Paper & Puzzle</h3>
+                        <p> I like a good puzzle of any kind. Jane Street's monthly puzzles are the absolute gold
+                            standard, and I try to do them whenever I get the time. Puzzles where
+                            all that is required to solve them is me, a pen, and paper are the best kind.</p>
+                    </div>
+
+                    <div class="quirk-box">
+                        <h3>Tutoring Gig</h3>
+                        <p>I teach math on the side to a wildly diverse spectrum of students. My current roster includes
+                            a bright seven-year-old from Guangzhou, a serial hobbiest fifth grader from Frankfurt, a
+                            polyglot part-time bartender
+                            biology major from the University of Melbourne, and a Comp. Sci major progammer from UC
+                            Davis and Quant Econ major who also majors in Drama at UCI. Its been fun and a small way
+                            of paying it forward.</p>
+                    </div>
+                </div>
+
+                <div class="misc-col misc-col-right">
+                    <div class="quirk-box">
+                        <h3>Fantasy Enthusiast</h3>
+                        <p>
+                            Visually, I have a highly specific appreciation for digital art that captures mundane,
+                            slice-of-life scenes set within grand fantasy or cyberpunk worlds, like a quiet Sunday
+                            market in a futuristic city. Late to the game, but I am an avid fiction
+                            reader/watcher/gamer, with Frank
+                            Herbert’s <em>Dune</em> the books sitting firmly at the top of my list. As Abraham Verghese
+                            sums it up
+                            <i>"fiction is the great lie that tells the truth of how the world lives"</i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // The Dark Mode Toggle Logic
+        function toggleTheme() {
+            const body = document.documentElement;
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // The Lore Expand/Collapse Logic
+        function toggleLore() {
+            const section = document.getElementById('lore-expanded-section');
+            const btn = document.getElementById('lore-toggle-btn');
+            const text = document.getElementById('lore-toggle-text');
+
+            // Toggle CSS classes
+            section.classList.toggle('expanded');
+            btn.classList.toggle('expanded');
+
+            // Change Text
+            if (section.classList.contains('expanded')) {
+                text.innerText = "Read Less";
+            } else {
+                text.innerText = "Read More";
+            }
+        }
+
+        // The Morphing Name Logic
+        const nameElement = document.getElementById('morph-name');
+        const englishName = "Raswanth";
+        const morphedName = "ரशwa01101110ಥ";
+
+        let isMorphed = false;
+        let isAnimating = false;
+        let animationInterval;
+
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;':,./<>?ரशಥ";
+
+        function toggleName() {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            let iterations = 0;
+            const targetName = isMorphed ? englishName : morphedName;
+            const targetLength = targetName.length;
+
+            animationInterval = setInterval(() => {
+                let scrambledText = "";
+                for (let i = 0; i < targetLength; i++) {
+                    if (i < iterations) {
+                        scrambledText += targetName[i];
+                    } else {
+                        scrambledText += chars[Math.floor(Math.random() * chars.length)];
+                    }
+                }
+
+                nameElement.innerText = scrambledText;
+                iterations += 1 / 3;
+
+                if (iterations >= targetLength) {
+                    clearInterval(animationInterval);
+                    nameElement.innerText = targetName;
+                    isMorphed = !isMorphed;
+                    isAnimating = false;
+                }
+            }, 30);
+        }
+
+        // The Experiences Toggle Logic
+        function toggleExperience(element, event) {
+            // Stop propagation to prevent document click from closing the card immediately
+            event.stopPropagation();
+
+            const grid = document.querySelector('.experiences-grid');
+            const isActive = element.classList.contains('active');
+
+            // Close any currently active items (ensure only one is open at a time)
+            document.querySelectorAll('.timeline-item.active').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            if (!isActive) {
+                element.classList.add('active');
+                grid.classList.add('has-active');
+            } else {
+                grid.classList.remove('has-active');
+            }
+        }
+
+        // Click outside to close functionality
+        document.addEventListener('click', function (event) {
+            const grid = document.querySelector('.experiences-grid');
+            if (grid && grid.classList.contains('has-active')) {
+                document.querySelectorAll('.timeline-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+                grid.classList.remove('has-active');
+            }
+        });
+    </script>
+</body>
+
+</html>
