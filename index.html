@@ -461,19 +461,40 @@
             transition: filter 0.3s ease, opacity 0.3s ease;
         }
 
-        .click-card {
+        /* Edge-to-edge highlight band, sized to the item's timeline segment, that
+           fades in on hover to invite a click. Sits behind the dot, line and text. */
+        .row-bg {
             position: absolute;
-            left: 120px;
-            top: -20px;
-            width: calc(100% - 130px);
+            top: -10px;
+            bottom: -25px;
+            left: 50%;
+            width: 100vw;
+            transform: translateX(-50%);
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .timeline-item:hover .row-bg {
+            background-color: var(--border-color);
+        }
+
+        .click-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: min(640px, 90vw);
+            max-height: 80vh;
+            overflow-y: auto;
             background-color: var(--card-bg);
             padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
+            transform: translate(-50%, -50%) scale(0.96);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
             pointer-events: none;
             z-index: 100;
             border: 1px solid var(--border-color);
@@ -482,7 +503,7 @@
         .timeline-item.active .click-card {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translate(-50%, -50%) scale(1);
             pointer-events: auto;
         }
 
@@ -490,6 +511,32 @@
             filter: blur(4px);
             opacity: 0.4;
             pointer-events: none;
+        }
+
+        /* Lift the section above the header and sibling sections while a card is
+           open so the centered modal floats above everything on the page. */
+        #experiences:has(.experiences-grid.has-active) {
+            z-index: 1000;
+        }
+
+        /* Dim, blurred backdrop behind the centered card. */
+        .experiences-grid::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        .experiences-grid.has-active::before {
+            opacity: 1;
+            visibility: visible;
         }
 
         .timeline-logo {
@@ -516,10 +563,6 @@
             background-color: var(--line-color);
             z-index: 1;
             transition: background-color 0.5s ease;
-        }
-
-        .timeline-item:last-child::after {
-            bottom: 0;
         }
 
         .timeline-item::before {
@@ -806,18 +849,16 @@
 
             <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
                 <svg class="solari-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="3"/>
-                    <rect x="10.75" y="1.5" width="2.5" height="7.5" rx="1.25"/>
-                    <rect x="15" y="10.75" width="7.5" height="2.5" rx="1.25"/>
-                    <rect x="10.75" y="15" width="2.5" height="7.5" rx="1.25"/>
-                    <rect x="1.5" y="10.75" width="7.5" height="2.5" rx="1.25"/>
-                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(45 12 12)"/>
-                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(135 12 12)"/>
-                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(225 12 12)"/>
-                    <rect x="11.6" y="2.5" width="0.8" height="6.5" rx="0.4" transform="rotate(315 12 12)"/>
+                    <!-- 8-point compass starburst with a hollow ring at the centre -->
+                    <path fill-rule="evenodd" d="M22,12 L15.7,10.47 L16.6,7.4 L13.53,8.3 L12,2
+                        L10.47,8.3 L7.4,7.4 L8.3,10.47 L2,12 L8.3,13.53 L7.4,16.6 L10.47,15.7
+                        L12,22 L13.53,15.7 L16.6,16.6 L15.7,13.53 Z
+                        M14.3,12 A2.3 2.3 0 1 0 9.7 12 A2.3 2.3 0 1 0 14.3 12 Z" />
                 </svg>
                 <svg class="lunari-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    <!-- Orb floating above an upward-curving crescent cradle -->
+                    <circle cx="12" cy="8.8" r="3.2" />
+                    <path d="M4.5,14 C6.5,20.5 17.5,20.5 19.5,14 C17.5,17.5 6.5,17.5 4.5,14 Z" />
                 </svg>
             </button>
         </div>
@@ -863,8 +904,7 @@
                         </svg>
                         Scholar
                     </a>
-                    <a href="Raswanth_CV_IIT_Caltech_AI4Science.pdf" target="_blank" class="icon-link"
-                        title="Curriculum Vitae">
+                    <a href="Raswanth_CV.pdf" target="_blank" class="icon-link" title="Curriculum Vitae">
                         <svg viewBox="0 0 24 24">
                             <path
                                 d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM18 20H6V4h5v6h6v10z" />
@@ -1037,16 +1077,42 @@
                 <h3>B.Tech, Computer Science and Engineering</h3>
                 <p><strong>Indian Institute of Technology, Palakkad</strong></p>
                 <div class="guide-tag">Guide: <a href="https://sites.google.com/view/chandrashekar-lakshminarayanan"
-                        class="guide-link">Chandrashekar</a></div>
+                        class="guide-link">Chandrashekar L</a>, <a href="https://iitpkd.ac.in/people/vivek"
+                        class="guide-link">Vivek Chaturvedi</a></div>
 
                 <div class="click-card">
                     <span class="date-tag">July 2018 - July 2022</span>
                     <h3>B.Tech, Computer Science and Engineering</h3>
-                    <p><strong>Indian Institute of Technology, Palakkad</strong></p>
-                    <div class="guide-tag" style="margin-bottom: 20px;">Guide: Chandrashekar</div>
-                    <ul>
-                        <li>[point1]</li>
-                        <li>[point2]</li>
+                    <p style="margin-bottom: 20px;"><strong>Indian Institute of Technology, Palakkad</strong></p>
+                    <ul
+                        style="color: var(--text-muted); font-size: 16px; margin-left: 20px; margin-top: 12px; display: flex; flex-direction: column; gap: 10px; line-height: 1.6;">
+                        <li><strong>Course Work</strong> — built the theoretical backbone of my training, leaning into
+                            the
+                            rigorous end of the curriculum across three fronts:
+                            <ul
+                                style="margin-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; list-style-type: circle;">
+                                <li><em>Theoretical CS:</em> Discrete Mathematics, Logic for Computing, Theory of
+                                    Computation</li>
+                                <li><em>Mathematics &amp; Sciences:</em> Multivariable Calculus &amp; Linear Algebra,
+                                    Probability · Stochastic Processes &amp; Statistics, Numerical Analysis, Quantum
+                                    Information · Communication &amp; Computation, Life Sciences (Biology)</li>
+                                <li><em>Machine Learning &amp; AI:</em> Artificial Intelligence, Reinforcement Learning,
+                                    Foundations of Data Science &amp; ML, Natural Language Processing, Foundations of
+                                    Linguistics</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sparse Reward RL Research</strong> — an open-ended research project with Dr.
+                            Chandrashekar, using reward shaping via message passing in graph neural networks to densify
+                            sparse RL reward functions; an Actor-Critic agent with online GCN training cut regret by 24%
+                            and converged 35% faster to the optimal policy in a grid-world testbed.</li>
+                        <li><strong>Editor of The Fleet Street</strong> — one of 5 editors (started as a correspondent)
+                            of IIT Palakkad's student media, researching and publishing on student elections,
+                            faculty/alumni interviews, and inter-IIT fests. During COVID I conceived and hosted a
+                            fireside-chat series with faculty, ex-faculty, and alumni to keep the community connected.</li>
+                        <li><strong>Gold medal at the Inter-IIT Tech Meet (2018–19)</strong> at IIT Bombay for an
+                            autonomous
+                            pesticide-spraying robot for small-scale Indian farmers — an end-to-end build (chassis,
+                            electronics, controls, code) that first hooked me on systems engineering.</li>
                     </ul>
                 </div>
             </div>
@@ -1356,10 +1422,20 @@
             }, 30);
         }
 
+        // Add the edge-to-edge hover highlight layer behind each experience row.
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            const bg = document.createElement('span');
+            bg.className = 'row-bg';
+            item.prepend(bg);
+        });
+
         // The Experiences Toggle Logic
         function toggleExperience(element, event) {
             // Stop propagation to prevent document click from closing the card immediately
             event.stopPropagation();
+
+            // Clicks inside the open card (scrolling, selecting text, links) shouldn't close it.
+            if (event.target.closest('.click-card')) return;
 
             const grid = document.querySelector('.experiences-grid');
             const isActive = element.classList.contains('active');
